@@ -1,4 +1,3 @@
-use proof
 import proof
 
 __inline__identity: func <T> (t: T) -> T {

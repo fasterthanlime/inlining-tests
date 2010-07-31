@@ -1,4 +1,3 @@
-use proof
 import proof
 
 __inline__getNth: func <T> (array: T*, n: Int) -> T {

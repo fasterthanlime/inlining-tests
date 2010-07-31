@@ -1,4 +1,3 @@
-use proof
 import proof
 
 Container: class <T> {
