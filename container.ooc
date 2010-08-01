@@ -20,7 +20,7 @@ test("container", ||
 
     for(k in 0..3) {
         val := cont __inline__get(k)
-        assert(val == k + 1)
+        assert(val == k + 1, "get(%d) should equal %d, but it equals %d" format(k, k + 1, val))
     }
 
 )
