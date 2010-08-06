@@ -1,6 +1,8 @@
 use proof
 import proof
 
+import structs/List
+
 /**
    Resizable-array implementation of the List interface. Implements all
    optional list operations, and permits all elements, including null.
@@ -11,7 +13,7 @@ import proof
 
    :author: Amos Wenger (nddrylliog)
  */
-ArrayList: class <T> {
+ArrayList: class <T> extends List<T> {
 
 	data : T*
 	capacity : Int
@@ -31,13 +33,13 @@ ArrayList: class <T> {
         capacity = size
     }
 
-	__inline__add: func (element: T) {
+	add: func (element: T) {
 		ensureCapacity(size + 1)
 		data[size] = element
 		size += 1
 	}
 
-	__inline__add: func ~withIndex (index: Int, element: T) {
+	add: func ~withIndex (index: Int, element: T) {
         // inserting at 0 can be optimized
 		if(index == 0) {
             ensureCapacity(size + 1)
@@ -51,7 +53,7 @@ ArrayList: class <T> {
         }
 
         if(index == size) {
-            __inline__add(element)
+            add(element)
             return
         }
 
@@ -66,16 +68,21 @@ ArrayList: class <T> {
 		size += 1
 	}
 
-	__inline__clear: func {
+	clear: func {
 		size = 0
 	}
 
-	__inline__get: inline func(index: Int) -> T {
+    get: func (index: Int) -> T {
+        checkIndex(index)
+		return data[index]
+    }
+
+	__inline__get: func(index: Int) -> T {
 		checkIndex(index)
 		return data[index]
 	}
 
-	__inline__indexOf: func(element: T) -> Int {
+	indexOf: func(element: T) -> Int {
 		index := 0
 		while(index < size) {
 			//if(memcmp(data + index * T size, element, T size) == 0) return index
@@ -85,7 +92,7 @@ ArrayList: class <T> {
 		return -1
 	}
 
-	__inline__lastIndexOf: func(element: T) -> Int {
+	lastIndexOf: func(element: T) -> Int {
 		index := size
 		while(index > -1) {
 			if(memcmp(data + index * T size, element, T size) == 0) return index
@@ -94,12 +101,30 @@ ArrayList: class <T> {
 		return -1
 	}
 
-	__inline__removeAt: func (index: Int) -> T {
+	removeAt: func (index: Int) -> T {
 		element := data[index]
         memmove(data + (index * T size), data + ((index + 1) * T size), (size - index) * T size)
 		size -= 1
 		return element
 	}
+
+    /**
+     * Does an in-place sort, with the given comparison function
+     */
+    sort: func (greaterThan: Func (T, T) -> Bool) {
+        inOrder := false
+        while (!inOrder) {
+            inOrder = true
+            for (i in 0..size - 1) {
+                if (greaterThan(this[i], this[i + 1])) {
+                    inOrder = false
+                    tmp := this[i]
+                    this[i] = this[i + 1]
+                    this[i + 1] = tmp
+                }
+            }
+        }
+    }
 
 	/**
 	 * Removes a single instance of the specified element from this list,
@@ -107,7 +132,7 @@ ArrayList: class <T> {
 	 * @return true if at least one occurence of the element has been
 	 * removed
 	 */
-	__inline__remove: func (element: T) -> Bool {
+	remove: func (element: T) -> Bool {
 		index := indexOf(element)
 		if(index == -1) return false
 		else {
@@ -120,7 +145,7 @@ ArrayList: class <T> {
 	 * Replaces the element at the specified position in this list with
 	 * the specified element.
 	 */
-	__inline__set: func(index: Int, element: T) -> T {
+	set: func(index: Int, element: T) -> T {
         checkIndex(index)
         old := data[index]
 		data[index] = element
@@ -212,7 +237,6 @@ ArrayListIterator: class <T> extends BackIterator<T> {
     }
 
 }
-
 
 test("arraylist", ||
 
