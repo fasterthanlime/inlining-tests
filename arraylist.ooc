@@ -241,9 +241,9 @@ ArrayListIterator: class <T> extends BackIterator<T> {
 test("arraylist", ||
 
     list := ArrayList<Int> new()
-    for(k in 0..3) list add(k)
+    for(k in 0..100) list add(k + 1)
 
-    for(k in 0..3) {
+    for(k in 0..list size()) {
         val := list __inline__get(k)
         assert(val == k + 1)
     }
