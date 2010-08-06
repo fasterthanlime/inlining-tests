@@ -244,8 +244,8 @@ ArrayListIterator: class <T> extends BackIterator<T> {
 
 main: func {
 
-    times := 200
-    size := 100_000
+    times := 2_000
+    size := 2_000
 
     list := ArrayList<Int> new()
     for(k in 0..size) list add(1)
@@ -258,8 +258,12 @@ main: func {
             list __inline__set(k, sum1)
         }
     }
-
     tt2 := Time runTime
+
+    list = ArrayList<Int> new()
+    for(k in 0..size) list add(1)
+
+    tt3 := Time runTime
     sum2 := 0
     for(j in 0..times) {
         for(k in 0..size) {
@@ -267,10 +271,9 @@ main: func {
             list set(k, sum2)
         }
     }
+    tt4 := Time runTime
 
-    tt3 := Time runTime
-
-    "%d (inlined) vs %d (naive)   [%d, %d]" printfln(tt2 - tt1, tt3 - tt2, sum1, sum2)
+    "%d (inlined) vs %d (naive)   [diff = %d]" printfln(tt2 - tt1, tt4 - tt3, sum2 - sum1)
 
 }
 
